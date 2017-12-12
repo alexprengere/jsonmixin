@@ -64,7 +64,7 @@ def _find_attrs(obj):
     visited = set()
 
     if hasattr(obj, '__dict__'):
-        for attr in sorted(obj.__dict__):
+        for attr in obj.__dict__:
             if attr not in visited:
                 yield attr
                 visited.add(attr)
