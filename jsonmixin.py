@@ -86,7 +86,9 @@ def _to_json(obj):
     if isinstance(obj, dict):
         return dict((k, _to_json(obj[k])) for k in obj)
 
-    return dict((attr, _to_json(getattr(obj, attr))) for attr in _find_attrs(obj))
+    return dict((attr, _to_json(getattr(obj, attr)))
+                for attr in _find_attrs(obj)
+                if not attr.startswith('_'))
 
 
 class JsonMixin(object):
