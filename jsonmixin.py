@@ -56,6 +56,9 @@ to_json() for all your objects!
 
 """
 
+import sys
+PY3 = sys.version_info[0] >= 3
+
 import inspect
 
 
@@ -79,6 +82,8 @@ def _find_attrs(obj):
 
 
 def _to_json(obj):
+    if not PY3 and isinstance(obj, unicode):
+        return obj.encode('utf8')
     if isinstance(obj, (str, int, float, complex, bool, type(None))):
         return obj
     if isinstance(obj, (set, frozenset, list, tuple)):
