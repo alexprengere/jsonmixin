@@ -56,10 +56,9 @@ to_json() for all your objects!
 
 """
 
+import inspect
 import sys
 PY3 = sys.version_info[0] >= 3
-
-import inspect
 
 
 def _find_attrs(obj):
