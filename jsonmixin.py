@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 to_json() for all your objects!
@@ -57,22 +56,20 @@ to_json() for all your objects!
 """
 
 import inspect
-import sys
-PY3 = sys.version_info[0] >= 3
 
 
 def _find_attrs(obj):
     """Iterate over all attributes of objects."""
     visited = set()
 
-    if hasattr(obj, '__dict__'):
+    if hasattr(obj, "__dict__"):
         for attr in obj.__dict__:
             if attr not in visited:
                 yield attr
                 visited.add(attr)
 
     for cls in reversed(inspect.getmro(obj.__class__)):
-        if hasattr(cls, '__slots__'):
+        if hasattr(cls, "__slots__"):
             for attr in cls.__slots__:
                 if hasattr(obj, attr):
                     if attr not in visited:
@@ -81,27 +78,28 @@ def _find_attrs(obj):
 
 
 def _to_json(obj):
-    if not PY3 and isinstance(obj, unicode):
-        return obj.encode('utf8')
     if isinstance(obj, (str, int, float, complex, bool, type(None))):
         return obj
     if isinstance(obj, (set, frozenset, list, tuple)):
         return [_to_json(e) for e in obj]
     if isinstance(obj, dict):
-        return dict((k, _to_json(obj[k])) for k in obj)
+        return {k: _to_json(obj[k]) for k in obj}
 
-    return dict((attr, _to_json(getattr(obj, attr)))
-                for attr in _find_attrs(obj)
-                if not attr.startswith('_'))
+    return {
+        attr: _to_json(getattr(obj, attr))
+        for attr in _find_attrs(obj)
+        if not attr.startswith("_")
+    }
 
 
-class JsonMixin(object):
+class JsonMixin:
     __slots__ = []
 
     def to_json(self):
         return _to_json(self)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
